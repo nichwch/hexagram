@@ -1,9 +1,20 @@
 import { OpenAI } from "openai";
 
+export const DEFAULT_QUERY = "DEFAULT_QUERY";
+export const OPENAI_KEY = "OPENAI_KEY";
+export const JSON_BLOB = "JSON_BLOB";
+
 export let openai = new OpenAI({
-  apiKey: localStorage.getItem("OPENAI_KEY"), // This is the default and can be omitted
+  apiKey: localStorage.getItem(OPENAI_KEY), // This is the default and can be omitted
   dangerouslyAllowBrowser: true,
 });
+
+export const reinitOpenAI = () => {
+  openai = new OpenAI({
+    apiKey: localStorage.getItem(OPENAI_KEY), // This is the default and can be omitted
+    dangerouslyAllowBrowser: true,
+  });
+};
 
 export const getDecks = async () => {
   const res = await fetch("http://localhost:8765", {
@@ -57,10 +68,10 @@ export const getCards = async (query: string) => {
   return body2.result;
 };
 
-export const textCompletion = async () => {
+export const textCompletion = async (prompt: string) => {
   const chatCompletion = await openai.chat.completions.create({
-    messages: [{ role: "user", content: "Say this is a test" }],
+    messages: [{ role: "user", content: prompt }],
     model: "gpt-3.5-turbo",
   });
-  return chatCompletion;
+  return chatCompletion?.choices[0]?.message.content;
 };
