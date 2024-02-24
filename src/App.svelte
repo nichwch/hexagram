@@ -1,6 +1,13 @@
 <script lang="ts">
   import { Button } from "$lib/components/ui/button";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
+  import { afterUpdate } from "svelte";
+  import { getCards, getDecks } from "./lib/anki";
+
+  afterUpdate(async () => {
+    const res = await getCards("deck:current");
+    console.log("body", res);
+  });
 
   let position = "bottom";
 </script>
