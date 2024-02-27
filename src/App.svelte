@@ -28,6 +28,7 @@
   };
   let cards: Card[] = [];
   let focusedCard: Card | null = null;
+  let editingSentences = false;
   let deckQuery = localStorage.getItem(DEFAULT_QUERY) || "deck:current";
   $: getCards(deckQuery).then((res) => (cards = res || []));
 
@@ -57,6 +58,19 @@
     } else {
       json_blob[vocabWord] = [result];
     }
+    json_blob = json_blob;
+    persistBlob();
+  };
+
+  const deleteSentence = async (
+    vocabWord: string,
+    sentenceToDelete: string
+  ) => {
+    if (json_blob[vocabWord] === undefined) return;
+    let sentences = json_blob[vocabWord];
+    json_blob[vocabWord] = sentences.filter(
+      (sentence) => sentence !== sentenceToDelete
+    );
     json_blob = json_blob;
     persistBlob();
   };
@@ -139,7 +153,7 @@
         <button
           class:bg-red-300={focusedCard?.fields.Simplified.value === currCard}
           class="text-xl text-center w-full font-normal block"
-          on:click={() => (focusedCard = card)}
+          on:click={() => ((focusedCard = card), (editingSentences = false))}
         >
           {currCard}
         </button>{/each}
@@ -158,18 +172,39 @@
             example sentences for {cardVal}:
           </h1>
           {#each json_blob[cardVal] || [] as sentence}
-            <div>{sentence}</div>
+            <div>
+              {#if editingSentences}
+                <Button
+                  on:click={() => deleteSentence(cardVal, sentence)}
+                  class="rounded-none"
+                  variant="destructive">x</Button
+                >
+              {/if}
+              {sentence}
+            </div>
           {/each}
-          <Button
-            variant="outline"
-            class="block mt-3"
-            on:click={() => generateSentence(cardVal || "")}
-            >{#if loading}
-              loading new sentence...
-            {:else}
-              generate new sentence
-            {/if}</Button
-          >
+          <div class="mt-3">
+            <Button
+              variant="outline"
+              class=""
+              on:click={() => generateSentence(cardVal || "")}
+              >{#if loading}
+                loading new sentence...
+              {:else}
+                generate new sentence
+              {/if}</Button
+            >
+            <Button
+              variant={editingSentences ? undefined : "secondary"}
+              class="ml-2"
+              on:click={() => (editingSentences = !editingSentences)}
+              >{#if editingSentences}
+                done
+              {:else}
+                edit sentences
+              {/if}</Button
+            >
+          </div>
         </div>
       {:else}
         no card selected
