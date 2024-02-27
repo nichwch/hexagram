@@ -47,7 +47,7 @@
 
   let loading = false;
   const generateSentence = async (vocabWord: string) => {
-    let prompt = `Generate an example sentence using the vocab word: ${vocabWord}. Use beginner level vocabulary. Only return the example sentence.`;
+    let prompt = `Generate an example Chinese sentence using Simplified characters using the vocab word: ${vocabWord}. Use beginner level vocabulary. Only return the example sentence.`;
     loading = true;
     let result = await textCompletion(prompt);
     loading = false;
