@@ -68,7 +68,7 @@
     <h1 class="text-left inline-block">hexagram</h1>
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild let:builder>
-        <Button class="" variant="outline" builders={[builder]}
+        <Button class="rounded-none" variant="ghost" builders={[builder]}
           >deck query</Button
         >
       </DropdownMenu.Trigger>
@@ -77,8 +77,10 @@
       </DropdownMenu.Content>
     </DropdownMenu.Root>
     <Dialog.Root>
-      <Dialog.Trigger class={buttonVariants({ variant: "outline" })}
-        >settings</Dialog.Trigger
+      <Dialog.Trigger asChild let:builder>
+        <Button class="rounded-none" variant="ghost" builders={[builder]}
+          >settings</Button
+        ></Dialog.Trigger
       >
       <Dialog.Content class="sm:max-w-[700px]">
         <Dialog.Header>
@@ -107,9 +109,12 @@
       </Dialog.Content>
     </Dialog.Root>
     <Dialog.Root>
-      <Dialog.Trigger
-        class={`${buttonVariants({ variant: "outline" })} float-right`}
-        >help</Dialog.Trigger
+      <Dialog.Trigger asChild let:builder>
+        <Button
+          class="rounded-none float-right"
+          variant="ghost"
+          builders={[builder]}>settings</Button
+        ></Dialog.Trigger
       >
       <Dialog.Content class="sm:max-w-[500px]">
         <Dialog.Header>
