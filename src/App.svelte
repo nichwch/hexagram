@@ -4,6 +4,7 @@
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import * as Dialog from "$lib/components/ui/dialog";
   import {
+    DEFAULT_DECK_QUERY,
     DEFAULT_QUERY,
     DEFAULT_SENTENCE_PROMPT,
     JSON_BLOB,
@@ -30,11 +31,11 @@
   let cards: Card[] = [];
   let focusedCard: Card | null = null;
   let editingSentences = false;
-  let deckQuery = localStorage.getItem(DEFAULT_QUERY) || "deck:current";
+  let deckQuery = localStorage.getItem(DEFAULT_QUERY) || DEFAULT_DECK_QUERY;
   $: getCards(deckQuery).then((res) => (cards = res || []));
 
   let settingsDeckQueryInput =
-    localStorage.getItem(DEFAULT_QUERY) || "deck:current";
+    localStorage.getItem(DEFAULT_QUERY) || DEFAULT_DECK_QUERY;
   let settingsOpenAIKeyInput = localStorage.getItem(OPENAI_KEY) || "";
   let sentencePromptInput =
     localStorage.getItem(SENTENCE_PROMPT) || DEFAULT_SENTENCE_PROMPT;
