@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { Button, buttonVariants } from "$lib/components/ui/button";
+  import { Button } from "$lib/components/ui/button";
   import { Textarea } from "$lib/components/ui/textarea";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import * as Dialog from "$lib/components/ui/dialog";
-  import { Badge } from "$lib/components/ui/badge";
   import {
     DEFAULT_QUERY,
     DEFAULT_SENTENCE_PROMPT,
@@ -11,8 +10,6 @@
     OPENAI_KEY,
     SENTENCE_PROMPT,
     getCards,
-    getDecks,
-    openai,
     reinitOpenAI,
     textCompletion,
   } from "./lib/api";
@@ -71,15 +68,10 @@
     persistBlob();
   };
 
-  const deleteSentence = async (
-    vocabWord: string,
-    sentenceToDelete: string
-  ) => {
+  const deleteSentence = async (vocabWord: string, index: number) => {
     if (json_blob[vocabWord] === undefined) return;
     let sentences = json_blob[vocabWord];
-    json_blob[vocabWord] = sentences.filter(
-      (sentence) => sentence !== sentenceToDelete
-    );
+    sentences.splice(index, 1);
     json_blob = json_blob;
     persistBlob();
   };
@@ -201,11 +193,11 @@
           <h1 class="my-3 text-xl">
             example sentences for {cardVal}:
           </h1>
-          {#each json_blob[cardVal] || [] as sentence}
+          {#each json_blob[cardVal] || [] as sentence, index}
             <div>
               {#if editingSentences}
                 <Button
-                  on:click={() => deleteSentence(cardVal, sentence)}
+                  on:click={() => deleteSentence(cardVal, index)}
                   class="rounded-none"
                   variant="destructive">x</Button
                 >
