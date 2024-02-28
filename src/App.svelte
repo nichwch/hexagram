@@ -1,11 +1,14 @@
 <script lang="ts">
   import { Button, buttonVariants } from "$lib/components/ui/button";
+  import { Textarea } from "$lib/components/ui/textarea";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import * as Dialog from "$lib/components/ui/dialog";
   import {
     DEFAULT_QUERY,
+    DEFAULT_SENTENCE_PROMPT,
     JSON_BLOB,
     OPENAI_KEY,
+    SENTENCE_PROMPT,
     getCards,
     getDecks,
     openai,
@@ -35,8 +38,11 @@
   let settingsDeckQueryInput =
     localStorage.getItem(DEFAULT_QUERY) || "deck:current";
   let settingsOpenAIKeyInput = localStorage.getItem(OPENAI_KEY) || "";
+  let sentencePromptInput =
+    localStorage.getItem(SENTENCE_PROMPT) || DEFAULT_SENTENCE_PROMPT;
 
   $: localStorage.setItem(DEFAULT_QUERY, settingsDeckQueryInput);
+  $: localStorage.setItem(SENTENCE_PROMPT, sentencePromptInput);
   $: {
     localStorage.setItem(OPENAI_KEY, settingsOpenAIKeyInput);
     reinitOpenAI();
@@ -48,7 +54,9 @@
 
   let loading = false;
   const generateSentence = async (vocabWord: string) => {
-    let prompt = `Generate an example Chinese sentence using Simplified characters using the vocab word: ${vocabWord}. Use beginner level vocabulary. Only return the example sentence.`;
+    let promptTemplate =
+      localStorage.getItem(SENTENCE_PROMPT) || DEFAULT_SENTENCE_PROMPT;
+    let prompt = promptTemplate.replace("$$vocabWord$$", vocabWord);
     loading = true;
     let result = await textCompletion(prompt);
     loading = false;
@@ -96,7 +104,7 @@
           >settings</Button
         ></Dialog.Trigger
       >
-      <Dialog.Content class="sm:max-w-[700px]">
+      <Dialog.Content class="sm:max-w-[700px] h-3/4 overflow-y-auto">
         <Dialog.Header>
           <Dialog.Title>Edit settings</Dialog.Title>
         </Dialog.Header>
@@ -119,7 +127,23 @@
               class="col-span-3"
             />
           </div>
+          <div class="grid grid-cols-4 items-center gap-4">
+            <Label for="sentence_prompt" class="text-right"
+              >Prompt for sentence generation (use $$vocabWord$$ where the vocab
+              word would be)</Label
+            >
+            <Textarea
+              id="sentence_prompt"
+              bind:value={sentencePromptInput}
+              class="h-48 col-span-3"
+            />
+          </div>
         </div>
+        <Button
+          class="col-span-1"
+          on:click={() => (sentencePromptInput = DEFAULT_SENTENCE_PROMPT)}
+          >reset sentence prompt to default</Button
+        >
       </Dialog.Content>
     </Dialog.Root>
     <Dialog.Root>

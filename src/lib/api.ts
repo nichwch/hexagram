@@ -3,6 +3,10 @@ import { OpenAI } from "openai";
 export const DEFAULT_QUERY = "DEFAULT_QUERY";
 export const OPENAI_KEY = "OPENAI_KEY";
 export const JSON_BLOB = "JSON_BLOB";
+export const SENTENCE_PROMPT = "SENTENCE_PROMPT";
+
+export const DEFAULT_SENTENCE_PROMPT =
+  "Generate an example Chinese sentence using Simplified characters using the vocab word: $$vocabWord$$. Use beginner level vocabulary. Only return the example sentence.";
 
 export let openai = new OpenAI({
   apiKey: localStorage.getItem(OPENAI_KEY), // This is the default and can be omitted
@@ -72,6 +76,7 @@ export const textCompletion = async (prompt: string) => {
   const chatCompletion = await openai.chat.completions.create({
     messages: [{ role: "user", content: prompt }],
     model: "gpt-4",
+    temperature: 0.7,
   });
   return chatCompletion?.choices[0]?.message.content;
 };
