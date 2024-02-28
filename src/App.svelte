@@ -3,6 +3,7 @@
   import { Textarea } from "$lib/components/ui/textarea";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import * as Dialog from "$lib/components/ui/dialog";
+  import { Badge } from "$lib/components/ui/badge";
   import {
     DEFAULT_QUERY,
     DEFAULT_SENTENCE_PROMPT,
@@ -176,10 +177,15 @@
         {@const currCard = card.fields.Simplified.value}
         <button
           class:bg-red-300={focusedCard?.fields.Simplified.value === currCard}
-          class="text-xl text-center w-full font-normal block"
+          class="text-xl w-full font-normal flex items-center px-3"
           on:click={() => ((focusedCard = card), (editingSentences = false))}
         >
           {currCard}
+          {#if json_blob[currCard] !== undefined}
+            <span class="ml-auto text-sm text-red-800">
+              ({json_blob[currCard].length})
+            </span>
+          {/if}
         </button>{/each}
     </div>
     <!-- content -->
