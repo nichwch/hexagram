@@ -117,13 +117,13 @@
     let storyId = nanoid();
 
     stories = [
-      ...stories,
       {
         id: storyId,
         prompt: promptTemplate,
         vocab: vocabArr,
         story: result,
       },
+      ...stories,
     ];
     loadingStory = false;
     persistStories();
@@ -194,8 +194,12 @@
             on:submit={() => generateStory()}
           />
           {#each stories as story}
-            <button on:click={() => (focusedStory = story)}>
-              {story.story.substring(0, 10)}...
+            <button
+              class=" w-full font-normal flex items-center px-3"
+              class:bg-red-300={focusedStory?.id === story.id}
+              on:click={() => (focusedStory = story)}
+            >
+              {story.story.substring(0, 7)}...
             </button>
           {/each}
         </Tabs.Content>
