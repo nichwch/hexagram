@@ -23,6 +23,8 @@
   import StoryGenerationModal from "./StoryGenerationModal.svelte";
   import { Switch } from "./lib/components/ui/switch";
   import { Label } from "./lib/components/ui/label";
+  import * as Dialog from "./lib/components/ui/dialog";
+  import InfoIcon from "./InfoIcon.svelte";
 
   // key value pair from vocab word to sentences
   let json_blob: { [key: string]: string[] } =
@@ -195,7 +197,7 @@
           />
           {#each stories as story}
             <button
-              class=" w-full font-normal flex items-center px-3"
+              class=" w-full font-normal flex items-center px-3 mt-2"
               class:bg-red-300={focusedStory?.id === story.id}
               on:click={() => (focusedStory = story)}
             >
@@ -206,11 +208,11 @@
       </Tabs.Root>
     </div>
     <!-- content -->
-    <div class="p-2 flex-grow overflow-y-scroll">
+    <div class="flex-grow overflow-y-scroll">
       {#if displaying === "vocab"}
         {#if focusedCard !== null}
           {@const cardVal = focusedCard.fields.Simplified.value}
-          <div class="w-[500px] mx-auto pt-8">
+          <div class="w-[500px] mx-auto p-2 pt-8">
             <h1 class="text-xl">
               {cardVal}:
             </h1>
@@ -234,7 +236,6 @@
             <div class="mt-3">
               <Button
                 variant="outline"
-                class=""
                 on:click={() => generateSentence(cardVal || "")}
                 >{#if loadingSentence}
                   loading new sentence...
@@ -255,14 +256,53 @@
             </div>
           </div>
         {:else}
-          no card selected
+          <div class="p-2">no card selected</div>
         {/if}
       {:else if displaying === "stories"}
         {#if focusedStory !== null}
-          <div class="w-[500px] mx-auto py-8">
-            <div class="flex items-center space-x-2 mb-2">
+          <div class="w-[500px] mx-auto pb-8">
+            <div
+              class="flex items-center py-5 space-x-2 mb-2 sticky top-0 bg-white"
+            >
               <Switch id="highlight-vocab" bind:checked={highlightVocab} />
               <Label for="highlight-vocab">Highlight vocab</Label>
+
+              <Dialog.Root>
+                <Dialog.Trigger asChild let:builder>
+                  <Button
+                    class="rounded-none"
+                    variant="ghost"
+                    builders={[builder]}><InfoIcon /></Button
+                  ></Dialog.Trigger
+                >
+                <Dialog.Content class="sm:max-w-[700px] h-3/4 overflow-y-auto">
+                  <Dialog.Header>
+                    <h4
+                      class="scroll-m-20 text-xl font-semibold tracking-tight"
+                    >
+                      Prompt
+                    </h4>
+                    <p>
+                      This story was generated with the following prompt: <span
+                        class="text-green-800">{focusedStory.prompt}</span
+                      >
+                    </p>
+                    <h4
+                      class="scroll-m-20 text-xl font-semibold tracking-tight"
+                    >
+                      Vocab
+                    </h4>
+                    <p>
+                      This story uses the following vocab: <span
+                        class="text-green-800"
+                        >{#each focusedStory.vocab as vocab}
+                          <span class="mr-3">{vocab}</span>
+                        {/each}</span
+                      >
+                    </p>
+                  </Dialog.Header>
+                </Dialog.Content>
+              </Dialog.Root>
             </div>
             <div class="leading-[4rem] text-2xl">
               {#each splitStory as fragment}
@@ -274,7 +314,7 @@
             </div>
           </div>
         {:else}
-          no story selected
+          <div class="p-2">no story selected</div>
         {/if}
       {/if}
     </div>
