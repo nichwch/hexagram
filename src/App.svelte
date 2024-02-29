@@ -255,17 +255,19 @@
         {/if}
       {:else if displaying === "stories"}
         {#if focusedStory !== null}
-          <div class="w-[500px] mx-auto py-8 leading-10">
+          <div class="w-[500px] mx-auto py-8">
             <div class="flex items-center space-x-2 mb-2">
               <Switch id="highlight-vocab" bind:checked={highlightVocab} />
               <Label for="highlight-vocab">Highlight vocab</Label>
             </div>
-            {#each splitStory as fragment}
-              <span
-                class:text-red-700={storyVocabSet.has(fragment) &&
-                  highlightVocab}>{fragment}</span
-              >
-            {/each}
+            <div class="leading-[4rem] text-2xl">
+              {#each splitStory as fragment}
+                <span
+                  class:text-red-700={storyVocabSet.has(fragment) &&
+                    highlightVocab}>{fragment}</span
+                >
+              {/each}
+            </div>
           </div>
         {:else}
           no story selected
