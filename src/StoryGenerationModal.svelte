@@ -3,9 +3,12 @@
   import * as Dialog from "$lib/components/ui/dialog";
   import { createEventDispatcher } from "svelte";
   import { Input } from "./lib/components/ui/input";
+  import Label from "./lib/components/ui/label/label.svelte";
+  import Textarea from "./lib/components/ui/textarea/textarea.svelte";
 
   export let deckQuery: string;
   export let loadingStory: boolean;
+  export let cards: string[];
 
   const dispatch = createEventDispatcher();
 </script>
@@ -14,12 +17,29 @@
   <Dialog.Trigger asChild let:builder>
     <Button class="w-full" builders={[builder]}>generate new story</Button>
   </Dialog.Trigger>
-  <Dialog.Content class="sm:max-w-[700px] overflow-y-auto h-3/4 ">
+  <Dialog.Content class="sm:max-w-[700px]  ">
     <Dialog.Header>
       <Dialog.Title>Generate story</Dialog.Title>
     </Dialog.Header>
     <h1>Vocab</h1>
-    <Input value={deckQuery} />
+    <div>
+      <Label for="deck_query" class="text-right"
+        >Deck query for vocab to use</Label
+      >
+      <Input id="deck_query" value={deckQuery} />
+    </div>
+    <div>
+      Vocab to use: <span class="text-green-800">
+        {#each cards as vocab}
+          <span class="mr-3">{vocab}</span>
+        {/each}
+      </span>
+    </div>
+    <!-- TODO: prompt for story -->
+    <div>
+      <Label for="prompt" class="text-right">Prompt for story</Label>
+      <Textarea id="prompt"></Textarea>
+    </div>
     <Button disabled={loadingStory} on:click={() => dispatch("submit")}
       >{#if loadingStory}
         generating story...

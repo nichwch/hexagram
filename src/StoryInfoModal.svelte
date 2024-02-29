@@ -13,8 +13,9 @@
       ><InfoIcon /></Button
     ></Dialog.Trigger
   >
-  <Dialog.Content class="sm:max-w-[700px] h-3/4 overflow-y-auto">
-    <Dialog.Header>
+  <Dialog.Content class="sm:max-w-[700px] ">
+    <Dialog.Header></Dialog.Header>
+    <div>
       <h4 class="scroll-m-20 text-xl font-semibold tracking-tight">Prompt</h4>
       <p>
         This story was generated with the following prompt: <span
@@ -29,6 +30,6 @@
           {/each}</span
         >
       </p>
-    </Dialog.Header>
+    </div>
   </Dialog.Content>
 </Dialog.Root>

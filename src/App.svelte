@@ -60,6 +60,7 @@
   };
 
   let cards: Card[] = [];
+  $: cardsCharacters = cards.map((card) => card.fields.Simplified.value);
   let focusedCard: Card | null = null;
   let editingSentences = false;
   let deckQuery = localStorage.getItem(DEFAULT_QUERY) || DEFAULT_DECK_QUERY;
@@ -194,6 +195,7 @@
           <StoryGenerationModal
             bind:deckQuery
             {loadingStory}
+            cards={cardsCharacters}
             on:submit={() => generateStory()}
           />
           {#each stories as story}
