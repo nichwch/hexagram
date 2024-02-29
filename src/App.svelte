@@ -1,4 +1,6 @@
 <script lang="ts">
+  import StoryInfoModal from "./StoryInfoModal.svelte";
+
   import HelpModal from "./HelpModal.svelte";
 
   import SettingsModal from "./SettingsModal.svelte";
@@ -23,8 +25,7 @@
   import StoryGenerationModal from "./StoryGenerationModal.svelte";
   import { Switch } from "./lib/components/ui/switch";
   import { Label } from "./lib/components/ui/label";
-  import * as Dialog from "./lib/components/ui/dialog";
-  import InfoIcon from "./InfoIcon.svelte";
+  import * as AlertDialog from "./lib/components/ui/alert-dialog";
 
   // key value pair from vocab word to sentences
   let json_blob: { [key: string]: string[] } =
@@ -264,45 +265,35 @@
             <div
               class="flex items-center py-5 space-x-2 mb-2 sticky top-0 bg-white"
             >
+              <StoryInfoModal
+                prompt={focusedStory.prompt}
+                vocabWords={focusedStory.vocab}
+              ></StoryInfoModal>
               <Switch id="highlight-vocab" bind:checked={highlightVocab} />
               <Label for="highlight-vocab">Highlight vocab</Label>
-
-              <Dialog.Root>
-                <Dialog.Trigger asChild let:builder>
-                  <Button
-                    class="rounded-none"
-                    variant="ghost"
-                    builders={[builder]}><InfoIcon /></Button
-                  ></Dialog.Trigger
-                >
-                <Dialog.Content class="sm:max-w-[700px] h-3/4 overflow-y-auto">
-                  <Dialog.Header>
-                    <h4
-                      class="scroll-m-20 text-xl font-semibold tracking-tight"
+              <AlertDialog.Root>
+                <AlertDialog.Trigger asChild let:builder>
+                  <Button builders={[builder]} variant="outline">delete</Button>
+                </AlertDialog.Trigger>
+                <AlertDialog.Content>
+                  <AlertDialog.Header>
+                    <AlertDialog.Title
+                      >Are you absolutely sure?</AlertDialog.Title
                     >
-                      Prompt
-                    </h4>
-                    <p>
-                      This story was generated with the following prompt: <span
-                        class="text-green-800">{focusedStory.prompt}</span
-                      >
-                    </p>
-                    <h4
-                      class="scroll-m-20 text-xl font-semibold tracking-tight"
+                  </AlertDialog.Header>
+                  <AlertDialog.Footer>
+                    <AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+                    <AlertDialog.Action
+                      on:click={() => {
+                        stories = stories.filter(
+                          (story) => story.id !== focusedStory?.id
+                        );
+                        persistStories();
+                      }}>Continue</AlertDialog.Action
                     >
-                      Vocab
-                    </h4>
-                    <p>
-                      This story uses the following vocab: <span
-                        class="text-green-800"
-                        >{#each focusedStory.vocab as vocab}
-                          <span class="mr-3">{vocab}</span>
-                        {/each}</span
-                      >
-                    </p>
-                  </Dialog.Header>
-                </Dialog.Content>
-              </Dialog.Root>
+                  </AlertDialog.Footer>
+                </AlertDialog.Content>
+              </AlertDialog.Root>
             </div>
             <div class="leading-[4rem] text-2xl">
               {#each splitStory as fragment}
