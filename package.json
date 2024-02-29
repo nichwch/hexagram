@@ -12,8 +12,9 @@
   },
   "dependencies": {
     "@tauri-apps/api": "^1.5.2",
-    "bits-ui": "^0.18.2",
+    "bits-ui": "^0.18.4",
     "clsx": "^2.1.0",
+    "nanoid": "^5.0.6",
     "openai": "^4.28.0",
     "svelte-radix": "^1.0.1",
     "tailwind-merge": "^2.2.1",

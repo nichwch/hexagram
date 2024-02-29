@@ -4,6 +4,7 @@ export const DEFAULT_QUERY = "DEFAULT_QUERY";
 export const OPENAI_KEY = "OPENAI_KEY";
 export const JSON_BLOB = "JSON_BLOB";
 export const SENTENCE_PROMPT = "SENTENCE_PROMPT";
+export const STORIES = "STORIES";
 
 export const DEFAULT_SENTENCE_PROMPT =
   "Generate an example Chinese sentence using Simplified characters using the vocab word: $$vocabWord$$. Use beginner level vocabulary. Only return the example sentence.";
