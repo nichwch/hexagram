@@ -12,10 +12,12 @@
     DEFAULT_DECK_QUERY,
     DEFAULT_QUERY,
     DEFAULT_SENTENCE_PROMPT,
+    DEFAULT_STORY_PROMPT,
     JSON_BLOB,
     OPENAI_KEY,
     SENTENCE_PROMPT,
     STORIES,
+    STORY_PROMPT,
     getCards,
     reinitOpenAI,
     textCompletion,
@@ -71,9 +73,12 @@
   let settingsOpenAIKeyInput = localStorage.getItem(OPENAI_KEY) || "";
   let sentencePromptInput =
     localStorage.getItem(SENTENCE_PROMPT) || DEFAULT_SENTENCE_PROMPT;
+  let storyPromptInput =
+    localStorage.getItem(STORY_PROMPT) || DEFAULT_STORY_PROMPT;
 
   $: localStorage.setItem(DEFAULT_QUERY, settingsDeckQueryInput);
   $: localStorage.setItem(SENTENCE_PROMPT, sentencePromptInput);
+  $: localStorage.setItem(STORY_PROMPT, storyPromptInput);
   $: {
     localStorage.setItem(OPENAI_KEY, settingsOpenAIKeyInput);
     reinitOpenAI();
@@ -107,14 +112,11 @@
     persistBlob();
   };
 
-  const generateStory = async () => {
+  const generateStory = async (promptTemplate: string) => {
     let allVocab = cards.map((card) => card.fields.Simplified.value).join(", ");
     let vocabArr = cards.map((card) => card.fields.Simplified.value);
-    let promptTemplate = `Write me a story in Chinese using Simplified characters, using the following vocabulary $$vocab$$. 
-    
-    Make it about a young man in his twenties living in New York City. Use simpler vocabulary, appropriate for HSK3 level reading.`;
 
-    let prompt = promptTemplate.replace("$$vocab$$", allVocab);
+    let prompt = promptTemplate.replace("$$vocabWord$$", allVocab);
     loadingStory = true;
     let result = await textCompletion(prompt);
     if (result === null) throw new Error("Story generation failed");
@@ -160,6 +162,7 @@
       bind:settingsDeckQueryInput
       bind:settingsOpenAIKeyInput
       bind:sentencePromptInput
+      bind:storyPromptInput
     ></SettingsModal>
     <HelpModal />
   </div>
@@ -194,9 +197,13 @@
         <Tabs.Content value="stories">
           <StoryGenerationModal
             bind:deckQuery
+            storyPrompt={storyPromptInput}
             {loadingStory}
             cards={cardsCharacters}
-            on:submit={() => generateStory()}
+            on:submit={(evt) => {
+              console.log(evt.detail);
+              generateStory(evt.detail);
+            }}
           />
           {#each stories as story}
             <button
@@ -225,7 +232,7 @@
               example sentences for {cardVal}:
             </h1>
             {#each json_blob[cardVal] || [] as sentence, index}
-              <div>
+              <div class="text-xl">
                 {#if editingSentences}
                   <Button
                     on:click={() => deleteSentence(cardVal, index)}

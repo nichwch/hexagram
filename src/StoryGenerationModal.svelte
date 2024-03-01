@@ -9,11 +9,17 @@
   export let deckQuery: string;
   export let loadingStory: boolean;
   export let cards: string[];
+  export let storyPrompt: string;
 
+  let storyPromptInput: string = storyPrompt;
   const dispatch = createEventDispatcher();
 </script>
 
-<Dialog.Root>
+<Dialog.Root
+  on:onOpenChange={() => {
+    storyPromptInput = storyPrompt;
+  }}
+>
   <Dialog.Trigger asChild let:builder>
     <Button class="w-full" builders={[builder]}>generate new story</Button>
   </Dialog.Trigger>
@@ -38,9 +44,11 @@
     <!-- TODO: prompt for story -->
     <div>
       <Label for="prompt" class="text-right">Prompt for story</Label>
-      <Textarea id="prompt"></Textarea>
+      <Textarea id="prompt" bind:value={storyPrompt}></Textarea>
     </div>
-    <Button disabled={loadingStory} on:click={() => dispatch("submit")}
+    <Button
+      disabled={loadingStory}
+      on:click={() => dispatch("submit", storyPrompt)}
       >{#if loadingStory}
         generating story...
       {:else}
