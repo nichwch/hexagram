@@ -11,8 +11,8 @@ export const DEFAULT_SENTENCE_PROMPT =
   "Generate an example Chinese sentence using Simplified characters using the vocab word: $$vocabWord$$. Use beginner level vocabulary. Only return the example sentence.";
 
 export const DEFAULT_STORY_PROMPT = `Write me a story in Chinese using Simplified characters, using the following vocabulary: $$vocabWord$$. 
-    
-    Make it about a young man in his twenties living in New York City. Use simpler vocabulary, appropriate for HSK3 level reading.`;
+
+Make it about a young man in his twenties living in New York City. Use simpler vocabulary, appropriate for HSK3 level reading.`;
 
 export const DEFAULT_DECK_QUERY = "prop:due=0 OR rated:1";
 export let openai = new OpenAI({

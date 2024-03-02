@@ -45,11 +45,12 @@
     <!-- TODO: prompt for story -->
     <div>
       <Label for="prompt" class="text-right">Prompt for story</Label>
-      <Textarea id="prompt" bind:value={storyPromptInput}></Textarea>
+      <Textarea id="prompt" class="h-44" bind:value={storyPromptInput}
+      ></Textarea>
     </div>
     <Button
       disabled={loadingStory}
-      on:click={() => dispatch("submit", storyPrompt)}
+      on:click={() => dispatch("submit", storyPromptInput)}
       >{#if loadingStory}
         generating story...
       {:else}
