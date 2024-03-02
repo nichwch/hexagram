@@ -201,7 +201,6 @@
             {loadingStory}
             cards={cardsCharacters}
             on:submit={(evt) => {
-              console.log(evt.detail);
               generateStory(evt.detail);
             }}
           />

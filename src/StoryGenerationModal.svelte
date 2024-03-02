@@ -16,7 +16,8 @@
 </script>
 
 <Dialog.Root
-  on:onOpenChange={() => {
+  onOpenChange={() => {
+    console.log("OPEN", storyPrompt);
     storyPromptInput = storyPrompt;
   }}
 >
@@ -44,7 +45,7 @@
     <!-- TODO: prompt for story -->
     <div>
       <Label for="prompt" class="text-right">Prompt for story</Label>
-      <Textarea id="prompt" bind:value={storyPrompt}></Textarea>
+      <Textarea id="prompt" bind:value={storyPromptInput}></Textarea>
     </div>
     <Button
       disabled={loadingStory}
