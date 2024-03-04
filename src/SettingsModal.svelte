@@ -71,7 +71,7 @@
     <Button
       class="col-span-1"
       on:click={() => (storyPromptInput = DEFAULT_STORY_PROMPT)}
-      >reset sentence prompt to default</Button
+      >reset story prompt to default</Button
     >
   </Dialog.Content>
 </Dialog.Root>
