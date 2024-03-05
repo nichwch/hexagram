@@ -17,7 +17,6 @@
 
 <Dialog.Root
   onOpenChange={() => {
-    console.log("OPEN", storyPrompt);
     storyPromptInput = storyPrompt;
   }}
 >

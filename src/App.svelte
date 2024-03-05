@@ -59,7 +59,6 @@
   let deckQuery = localStorage.getItem(DEFAULT_QUERY) || DEFAULT_DECK_QUERY;
   $: deckQueryWithDeck = deckQuery + ` AND "deck:${deckInput}"`;
   $: getCards(deckQueryWithDeck).then((res) => (cards = res || []));
-  $: console.log({ cards, decks, fields });
 
   let decks = [] as string[];
   $: getDecks().then((res) => (decks = res || []));
