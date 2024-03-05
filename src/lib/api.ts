@@ -18,13 +18,13 @@ Make it about a young man in his twenties living in New York City. Use simpler v
 
 export const DEFAULT_DECK_QUERY = "prop:due=0 OR rated:1";
 export let openai = new OpenAI({
-  apiKey: localStorage.getItem(OPENAI_KEY), // This is the default and can be omitted
+  apiKey: localStorage.getItem(OPENAI_KEY) || "", // This is the default and can be omitted
   dangerouslyAllowBrowser: true,
 });
 
 export const reinitOpenAI = () => {
   openai = new OpenAI({
-    apiKey: localStorage.getItem(OPENAI_KEY), // This is the default and can be omitted
+    apiKey: localStorage.getItem(OPENAI_KEY) || "", // This is the default and can be omitted
     dangerouslyAllowBrowser: true,
   });
 };
