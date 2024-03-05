@@ -9,6 +9,7 @@
   import { Button } from "$lib/components/ui/button";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import {
+    DECK_CHOICE,
     DEFAULT_DECK_QUERY,
     DEFAULT_QUERY,
     DEFAULT_SENTENCE_PROMPT,
@@ -19,10 +20,15 @@
     STORIES,
     STORY_PROMPT,
     getCards,
+    getDecks,
     reinitOpenAI,
     textCompletion,
+    type Card,
+    type Story,
+    SHOWN_FIELDS,
   } from "./lib/api";
   import { Input } from "$lib/components/ui/input";
+
   import * as Tabs from "$lib/components/ui/tabs";
   import StoryGenerationModal from "./StoryGenerationModal.svelte";
   import { Switch } from "./lib/components/ui/switch";
@@ -46,28 +52,22 @@
 
   let displaying: "vocab" | "stories" = "vocab";
 
-  type Card = {
-    fields: {
-      Simplified: { value: string };
-      Pinyin: { value: string };
-      English: { value: string };
-    };
-  };
-
-  type Story = {
-    id: string;
-    vocab: string[];
-    story: string;
-    prompt: string;
-  };
-
   let cards: Card[] = [];
-  $: cardsCharacters = cards.map((card) => card.fields.Simplified.value);
+  $: cardsCharacters = cards.map((card) => card.fields[vocabField].value);
   let focusedCard: Card | null = null;
   let editingSentences = false;
   let deckQuery = localStorage.getItem(DEFAULT_QUERY) || DEFAULT_DECK_QUERY;
-  $: getCards(deckQuery).then((res) => (cards = res || []));
+  $: deckQueryWithDeck = deckQuery + ` AND "deck:${deckInput}"`;
+  $: getCards(deckQueryWithDeck).then((res) => (cards = res || []));
+  $: console.log({ cards, decks, fields });
 
+  let decks = [] as string[];
+  $: getDecks().then((res) => (decks = res || []));
+
+  let fields: string[] = JSON.parse(localStorage.getItem(SHOWN_FIELDS) || "[]");
+  $: vocabField = fields[0] || "";
+  $: definitionFields = fields.slice(1);
+  let deckInput = localStorage.getItem(DECK_CHOICE) || "";
   let settingsDeckQueryInput =
     localStorage.getItem(DEFAULT_QUERY) || DEFAULT_DECK_QUERY;
   let settingsOpenAIKeyInput = localStorage.getItem(OPENAI_KEY) || "";
@@ -76,9 +76,11 @@
   let storyPromptInput =
     localStorage.getItem(STORY_PROMPT) || DEFAULT_STORY_PROMPT;
 
+  $: localStorage.setItem(SHOWN_FIELDS, JSON.stringify(fields));
   $: localStorage.setItem(DEFAULT_QUERY, settingsDeckQueryInput);
   $: localStorage.setItem(SENTENCE_PROMPT, sentencePromptInput);
   $: localStorage.setItem(STORY_PROMPT, storyPromptInput);
+  $: localStorage.setItem(DECK_CHOICE, deckInput);
   $: {
     localStorage.setItem(OPENAI_KEY, settingsOpenAIKeyInput);
     reinitOpenAI();
@@ -113,8 +115,10 @@
   };
 
   const generateStory = async (promptTemplate: string) => {
-    let allVocab = cards.map((card) => card.fields.Simplified.value).join(", ");
-    let vocabArr = cards.map((card) => card.fields.Simplified.value);
+    let allVocab = cards
+      .map((card) => card.fields[vocabField].value)
+      .join(", ");
+    let vocabArr = cards.map((card) => card.fields[vocabField].value);
 
     let prompt = promptTemplate.replace("$$vocabWord$$", allVocab);
     loadingStory = true;
@@ -163,6 +167,10 @@
       bind:settingsOpenAIKeyInput
       bind:sentencePromptInput
       bind:storyPromptInput
+      bind:deckInput
+      bind:fields
+      card={cards[0]}
+      {decks}
     ></SettingsModal>
     <HelpModal />
   </div>
@@ -177,9 +185,9 @@
         </Tabs.List>
         <Tabs.Content value="vocab">
           {#each cards as card}
-            {@const currCard = card.fields.Simplified.value}
+            {@const currCard = card.fields[vocabField].value}
             <button
-              class:bg-red-300={focusedCard?.fields.Simplified.value ===
+              class:bg-red-300={focusedCard?.fields[vocabField].value ===
                 currCard}
               class="text-xl w-full font-normal flex items-center px-3"
               on:click={() => (
@@ -220,13 +228,14 @@
     <div class="flex-grow overflow-y-scroll">
       {#if displaying === "vocab"}
         {#if focusedCard !== null}
-          {@const cardVal = focusedCard.fields.Simplified.value}
+          {@const cardVal = focusedCard.fields[vocabField].value}
           <div class="w-[500px] mx-auto p-2 pt-8">
             <h1 class="text-xl">
               {cardVal}:
             </h1>
-            <p class="italic">{focusedCard.fields.Pinyin.value}</p>
-            <p class="italic">{focusedCard.fields.English.value}</p>
+            {#each definitionFields as defField}
+              <p class="italic">{focusedCard.fields[defField].value}</p>
+            {/each}
             <h1 class="my-3 text-xl">
               example sentences for {cardVal}:
             </h1>

@@ -6,6 +6,8 @@ export const JSON_BLOB = "JSON_BLOB";
 export const SENTENCE_PROMPT = "SENTENCE_PROMPT";
 export const STORY_PROMPT = "STORY_PROMPT";
 export const STORIES = "STORIES";
+export const DECK_CHOICE = "DECK_CHOICE";
+export const SHOWN_FIELDS = "SHOWN_FIELDS";
 
 export const DEFAULT_SENTENCE_PROMPT =
   "Generate an example Chinese sentence using Simplified characters using the vocab word: $$vocabWord$$. Use beginner level vocabulary. Only return the example sentence.";
@@ -25,6 +27,17 @@ export const reinitOpenAI = () => {
     apiKey: localStorage.getItem(OPENAI_KEY), // This is the default and can be omitted
     dangerouslyAllowBrowser: true,
   });
+};
+
+export type Card = {
+  fields: { [key: string]: { value: string } };
+};
+
+export type Story = {
+  id: string;
+  vocab: string[];
+  story: string;
+  prompt: string;
 };
 
 export const getDecks = async () => {

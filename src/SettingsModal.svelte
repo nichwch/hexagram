@@ -3,14 +3,30 @@
   import { Textarea } from "$lib/components/ui/textarea";
 
   import * as Dialog from "$lib/components/ui/dialog";
-  import { DEFAULT_SENTENCE_PROMPT, DEFAULT_STORY_PROMPT } from "./lib/api";
+  import {
+    DEFAULT_SENTENCE_PROMPT,
+    DEFAULT_STORY_PROMPT,
+    type Card,
+  } from "./lib/api";
   import { Input } from "$lib/components/ui/input";
   import { Label } from "$lib/components/ui/label";
+  import * as Select from "$lib/components/ui/select";
+  import * as Popover from "$lib/components/ui/popover";
+  import { Checkbox } from "$lib/components/ui/checkbox";
 
   export let settingsDeckQueryInput: string;
   export let settingsOpenAIKeyInput: string;
   export let sentencePromptInput: string;
   export let storyPromptInput: string;
+  export let deckInput: string;
+  export let decks: string[];
+  export let card: Card;
+  export let fields: string[];
+
+  let vocabFieldInput: string = fields[0];
+  let fieldInput: string[] = fields.slice(1);
+  $: fields = [vocabFieldInput, ...fieldInput];
+  $: cardFields = Array.from(Object.keys(card?.fields || {}));
 </script>
 
 <Dialog.Root>
@@ -33,6 +49,76 @@
         />
       </div>
       <div class="grid grid-cols-4 items-center gap-4">
+        <Label for="deck" class="text-right">Deck</Label>
+        <Select.Root
+          portal={null}
+          onSelectedChange={(v) => (deckInput = v?.value || "")}
+          selected={{ value: deckInput, label: deckInput }}
+        >
+          <Select.Trigger class="w-[180px]" id="deck">
+            <Select.Value placeholder="Select a deck to use" />
+          </Select.Trigger>
+          <Select.Content>
+            <Select.Group>
+              <Select.Label>Decks</Select.Label>
+              {#each decks as deck}
+                <Select.Item value={deck} label={deck}>{deck}</Select.Item>
+              {/each}
+            </Select.Group>
+          </Select.Content>
+          <Select.Input name="favoriteFruit" />
+        </Select.Root>
+      </div>
+      <div class="grid grid-cols-4 items-center gap-4">
+        <Label for="deck" class="text-right">Vocab field</Label>
+        <Select.Root
+          portal={null}
+          onSelectedChange={(v) => (vocabFieldInput = v?.value || "")}
+          selected={{ value: vocabFieldInput, label: vocabFieldInput }}
+        >
+          <Select.Trigger class="w-[180px]" id="deck">
+            <Select.Value
+              placeholder="Select the field that is the vocabulary word"
+            />
+          </Select.Trigger>
+          <Select.Content>
+            <Select.Group>
+              <Select.Label>Fields</Select.Label>
+              {#each cardFields as field}
+                <Select.Item value={field} label={field}>{field}</Select.Item>
+              {/each}
+            </Select.Group>
+          </Select.Content>
+          <Select.Input name="favoriteFruit" />
+        </Select.Root>
+      </div>
+      <div class="grid grid-cols-4 items-center gap-4">
+        <Label for="deck" class="text-right">Definition fields</Label>
+        <Popover.Root portal={null}>
+          <Popover.Trigger asChild let:builder>
+            <Button builders={[builder]} variant="outline">Open</Button>
+          </Popover.Trigger>
+          <Popover.Content class="w-52">
+            {#each cardFields.filter((field) => field !== vocabFieldInput) as field}
+              {@const fieldChecked = fieldInput.includes(field)}
+              <div class="flex justify-between mb-2">
+                <Label for="width">{field}</Label>
+                <Checkbox
+                  checked={fieldChecked}
+                  on:click={() => {
+                    if (fieldChecked) {
+                      fieldInput = fieldInput.filter((f) => f !== field);
+                    } else {
+                      fieldInput = [...fieldInput, field];
+                    }
+                  }}
+                />
+              </div>
+            {/each}
+          </Popover.Content>
+        </Popover.Root>
+      </div>
+      <div class="grid grid-cols-4 items-center gap-4">
         <Label for="api_key" class="text-right">OpenAI API key</Label>
         <Input
           id="api_key"
@@ -51,6 +137,11 @@
           class="h-48 col-span-3"
         />
       </div>
+      <Button
+        class="col-span-1"
+        on:click={() => (sentencePromptInput = DEFAULT_SENTENCE_PROMPT)}
+        >reset sentence prompt to default</Button
+      >
       <div class="grid grid-cols-4 items-center gap-4">
         <Label for="story_prompt" class="text-right"
           >Prompt for story generation (use $$vocabWord$$ where the vocab word
@@ -63,11 +154,6 @@
         />
       </div>
     </div>
-    <Button
-      class="col-span-1"
-      on:click={() => (sentencePromptInput = DEFAULT_SENTENCE_PROMPT)}
-      >reset sentence prompt to default</Button
-    >
     <Button
       class="col-span-1"
       on:click={() => (storyPromptInput = DEFAULT_STORY_PROMPT)}
