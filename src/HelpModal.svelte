@@ -19,7 +19,7 @@
       <p>To get started, set up the AnkiConnect add on in Anki.</p>
       <p class="mt-3">
         Once you have set up AnkiConnect, go to the add on configs and set
-        "webCorsOriginList" to include "http://localhost:1420".
+        "webCorsOriginList" to include "tauri://localhost".
       </p>
     </div>
   </Dialog.Content>
