@@ -59,7 +59,7 @@
             <Select.Value placeholder="Select a deck to use" />
           </Select.Trigger>
           <Select.Content>
-            <Select.Group>
+            <Select.Group class="max-h-[18rem] overflow-y-auto">
               <Select.Label>Decks</Select.Label>
               {#each decks as deck}
                 <Select.Item value={deck} label={deck}>{deck}</Select.Item>
