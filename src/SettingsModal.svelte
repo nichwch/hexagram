@@ -52,7 +52,12 @@
         <Label for="deck" class="text-right">Deck</Label>
         <Select.Root
           portal={null}
-          onSelectedChange={(v) => (deckInput = v?.value || "")}
+          onSelectedChange={(v) => {
+            deckInput = v?.value || "";
+            vocabFieldInput = "";
+            fieldInput = [];
+            settingsDeckQueryInput = "";
+          }}
           selected={{ value: deckInput, label: deckInput }}
         >
           <Select.Trigger class="w-[180px]" id="deck">
