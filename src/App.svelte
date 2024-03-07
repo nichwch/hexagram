@@ -53,19 +53,21 @@
   let displaying: "vocab" | "stories" = "vocab";
 
   let cards: Card[] = [];
-  $: cardsCharacters = cards.map((card) => card.fields[vocabField].value);
+
+  let fields: string[] = JSON.parse(localStorage.getItem(SHOWN_FIELDS) || "[]");
+  $: vocabField = fields?.[0] || "";
+  $: definitionFields = fields.slice(1);
+  $: cardsCharacters = cards.map((card) => card.fields[vocabField]?.value);
   let focusedCard: Card | null = null;
   let editingSentences = false;
   let deckQuery = localStorage.getItem(DEFAULT_QUERY) || DEFAULT_DECK_QUERY;
-  $: deckQueryWithDeck = deckQuery + ` AND "deck:${deckInput}"`;
+  $: deckQueryWithDeck = `(${deckQuery}) AND "deck:${deckInput}"`;
   $: getCards(deckQueryWithDeck).then((res) => (cards = res || []));
+  $: console.log({ cards, decks, fields });
 
   let decks = [] as string[];
   $: getDecks().then((res) => (decks = res || []));
 
-  let fields: string[] = JSON.parse(localStorage.getItem(SHOWN_FIELDS) || "[]");
-  $: vocabField = fields[0] || "";
-  $: definitionFields = fields.slice(1);
   let deckInput = localStorage.getItem(DECK_CHOICE) || "";
   let settingsDeckQueryInput =
     localStorage.getItem(DEFAULT_QUERY) || DEFAULT_DECK_QUERY;
@@ -115,9 +117,9 @@
 
   const generateStory = async (promptTemplate: string) => {
     let allVocab = cards
-      .map((card) => card.fields[vocabField].value)
+      .map((card) => card.fields[vocabField]?.value)
       .join(", ");
-    let vocabArr = cards.map((card) => card.fields[vocabField].value);
+    let vocabArr = cards.map((card) => card.fields[vocabField]?.value);
 
     let prompt = promptTemplate.replace("$$vocabWord$$", allVocab);
     loadingStory = true;
@@ -184,9 +186,9 @@
         </Tabs.List>
         <Tabs.Content value="vocab">
           {#each cards as card}
-            {@const currCard = card.fields[vocabField].value}
+            {@const currCard = card.fields[vocabField]?.value}
             <button
-              class:bg-red-300={focusedCard?.fields[vocabField].value ===
+              class:bg-red-300={focusedCard?.fields[vocabField]?.value ===
                 currCard}
               class="text-xl w-full font-normal flex items-center px-3"
               on:click={() => (
@@ -227,13 +229,13 @@
     <div class="flex-grow overflow-y-scroll">
       {#if displaying === "vocab"}
         {#if focusedCard !== null}
-          {@const cardVal = focusedCard.fields[vocabField].value}
+          {@const cardVal = focusedCard.fields[vocabField]?.value}
           <div class="w-[500px] mx-auto p-2 pt-8">
             <h1 class="text-xl">
               {cardVal}:
             </h1>
             {#each definitionFields as defField}
-              <p class="italic">{focusedCard.fields[defField].value}</p>
+              <p class="italic">{focusedCard.fields[defField]?.value}</p>
             {/each}
             <h1 class="my-3 text-xl">
               example sentences for {cardVal}:
