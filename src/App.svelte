@@ -61,9 +61,12 @@
   let focusedCard: Card | null = null;
   let editingSentences = false;
   let deckQuery = localStorage.getItem(DEFAULT_QUERY) || DEFAULT_DECK_QUERY;
-  $: deckQueryWithDeck = `(${deckQuery}) AND "deck:${deckInput}"`;
+  $: deckQueryWithDeck =
+    deckQuery.trim().length > 0
+      ? `(${deckQuery}) AND "deck:${deckInput}"`
+      : `"deck:${deckInput}"`;
   $: getCards(deckQueryWithDeck).then((res) => (cards = res || []));
-  $: console.log({ cards, decks, fields });
+  $: console.log({ cards, decks, fields, deckQueryWithDeck });
 
   let decks = [] as string[];
   $: getDecks().then((res) => (decks = res || []));
@@ -165,6 +168,7 @@
     </DropdownMenu.Root>
     <SettingsModal
       bind:settingsDeckQueryInput
+      bind:currQuery={deckQuery}
       bind:settingsOpenAIKeyInput
       bind:sentencePromptInput
       bind:storyPromptInput

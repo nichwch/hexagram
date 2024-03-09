@@ -15,6 +15,7 @@
   import { Checkbox } from "$lib/components/ui/checkbox";
 
   export let settingsDeckQueryInput: string;
+  export let currQuery: string;
   export let settingsOpenAIKeyInput: string;
   export let sentencePromptInput: string;
   export let storyPromptInput: string;
@@ -22,7 +23,6 @@
   export let decks: string[];
   export let card: Card;
   export let fields: string[];
-
   let vocabFieldInput: string = fields[0];
   let fieldInput: string[] = fields.slice(1);
   $: fields = [vocabFieldInput, ...fieldInput];
@@ -57,6 +57,7 @@
             vocabFieldInput = "";
             fieldInput = [];
             settingsDeckQueryInput = "";
+            currQuery = "";
           }}
           selected={{ value: deckInput, label: deckInput }}
         >

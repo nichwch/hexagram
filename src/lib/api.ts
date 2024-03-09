@@ -16,7 +16,7 @@ export const DEFAULT_STORY_PROMPT = `Write me a story in Chinese using Simplifie
 
 Make it about a young man in his twenties living in New York City. Use simpler vocabulary, appropriate for HSK3 level reading.`;
 
-export const DEFAULT_DECK_QUERY = "prop:due=0 OR rated:1";
+export const DEFAULT_DECK_QUERY = "prop:due=1 OR rated:0";
 export let openai = new OpenAI({
   apiKey: localStorage.getItem(OPENAI_KEY) || "", // This is the default and can be omitted
   dangerouslyAllowBrowser: true,
