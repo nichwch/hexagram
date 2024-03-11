@@ -4,7 +4,7 @@
 
 
 
-Hexagram uses LLMs to generate example sentences for Chinese Anki vocabulary cards.
+Hexagram uses LLMs to generate example sentences and stories for Chinese Anki vocabulary cards.
 
 [It is available for MacOS.](https://github.com/nichwch/hexagram/releases/tag/v0.1.0)
 
